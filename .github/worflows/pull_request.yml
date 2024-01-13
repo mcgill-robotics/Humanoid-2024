@@ -1,0 +1,18 @@
+name: Integration Test
+
+on:
+  pull_request:
+    branches: [noetic]
+
+jobs:
+  CI:
+    runs-on: ubuntu-22.04
+    container:
+        image: mcgillrobotics/humanoid:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: colcon build
+        shell: bash
+        run: |
+            cd ros2_ws
+            colcon build
