@@ -1,0 +1,13 @@
+services:
+  LegStrong:
+    image: mcgillrobotics/humanoid:latest
+    volumes:
+      - ./:/root/Humanoid
+    command: bash -c "tail -f /dev/null"
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]

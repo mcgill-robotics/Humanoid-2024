@@ -1,0 +1,10 @@
+# generated catkin workspaces
+ros2_ws/build/
+ros2_ws/log/
+ros2_ws/install/
+
+# swap files
+**/*.swp
+
+# cached files
+**/__pycache__/
