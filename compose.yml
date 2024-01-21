@@ -1,5 +1,5 @@
 services:
-  LegStrong:
+  Athena:
     image: mcgillrobotics/humanoid:latest
     volumes:
       - ./:/root/Humanoid
