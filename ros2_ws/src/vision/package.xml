@@ -4,8 +4,8 @@
   <name>vision</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="57821698+MrMondrian@users.noreply.github.com">root</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="57821698+MrMondrian@users.noreply.github.com">HumanoidMR</maintainer>
+  <license>GNUv3</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

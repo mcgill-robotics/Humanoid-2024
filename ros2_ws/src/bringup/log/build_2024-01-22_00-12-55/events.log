@@ -1,0 +1,16 @@
+[0.000000] (-) TimerEvent: {}
+[0.000216] (bringup) JobQueued: {'identifier': 'bringup', 'dependencies': OrderedDict()}
+[0.000380] (bringup) JobStarted: {'identifier': 'bringup'}
+[0.098866] (-) TimerEvent: {}
+[0.199144] (-) TimerEvent: {}
+[0.299946] (-) TimerEvent: {}
+[0.400276] (-) TimerEvent: {}
+[0.500610] (-) TimerEvent: {}
+[0.600998] (-) TimerEvent: {}
+[0.701321] (-) TimerEvent: {}
+[0.801615] (-) TimerEvent: {}
+[0.901901] (-) TimerEvent: {}
+[1.002320] (-) TimerEvent: {}
+[1.089319] (bringup) StderrLine: {'line': b'Traceback (most recent call last):\n  File "/usr/lib/python3/dist-packages/colcon_core/executor/__init__.py", line 91, in __call__\n    rc = await self.task(*args, **kwargs)\n  File "/usr/lib/python3/dist-packages/colcon_core/task/__init__.py", line 93, in __call__\n    return await task_method(*args, **kwargs)\n  File "/usr/lib/python3/dist-packages/colcon_ros/task/ament_python/build.py", line 54, in build\n    data_files = get_data_files_mapping(\n  File "/usr/lib/python3/dist-packages/colcon_core/task/python/__init__.py", line 36, in get_data_files_mapping\n    assert len(data_file) == 2\nAssertionError\n'}
+[1.095509] (bringup) JobEnded: {'identifier': 'bringup', 'rc': 1}
+[1.100034] (-) EventReactorShutdown: {}
