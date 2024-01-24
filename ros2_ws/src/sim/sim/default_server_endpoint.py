@@ -2,7 +2,7 @@
 
 import rclpy
 
-from ros_tcp_endpoint import TcpServer
+from sim import TcpServer
 
 
 def main(args=None):

@@ -1,3 +1,4 @@
 * text eol=lf
 *.png binary
 *.pt binary
+ros2_ws/src/sim/builds/** filter=lfs diff=lfs merge=lfs -text

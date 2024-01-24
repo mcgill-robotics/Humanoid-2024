@@ -103,7 +103,7 @@ class TcpServer(Node):
                 (conn, (ip, port)) = tcp_server.accept()
                 ClientThread(conn, self, ip, port).start()
             except socket.timeout as err:
-                self.logerr("ros_tcp_endpoint.TcpServer: socket timeout")
+                self.logerr("sim.TcpServer: socket timeout")
 
     def send_unity_error(self, error):
         self.unity_tcp_sender.send_unity_error(error)

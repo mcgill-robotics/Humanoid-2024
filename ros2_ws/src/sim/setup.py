@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup
 
-package_name = "ros_tcp_endpoint"
+package_name = "sim"
 share_dir = os.path.join("share", package_name)
 
 setup(
@@ -23,7 +23,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "default_server_endpoint = ros_tcp_endpoint.default_server_endpoint:main"
+            "default_server_endpoint = sim.default_server_endpoint:main"
         ]
     },
 )
