@@ -10,6 +10,10 @@ def generate_launch_description():
                 executable="default_server_endpoint",
                 emulate_tty=True,
                 parameters=[{"ROS_IP": "0.0.0.0"}, {"ROS_TCP_PORT": 10000}],
+            ),
+            Node(
+                package="sim",
+                executable="unity_bridge"
             )
         ]
     )

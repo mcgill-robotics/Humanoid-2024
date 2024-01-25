@@ -1,4 +1,3 @@
-
 # Left Leg
 float64 left_ankle_pitch
 float64 left_knee

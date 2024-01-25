@@ -4,7 +4,7 @@
   <name>controls</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="antoine.dangeard@gmail.com">HumanoidMR</maintainer>
+  <maintainer email="57821698+antoinedang@users.noreply.github.com">HumanoidMR</maintainer>
   <license>GNUv3</license>
 
   <test_depend>ament_copyright</test_depend>

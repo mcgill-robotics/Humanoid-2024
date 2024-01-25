@@ -6,13 +6,14 @@ from launch.actions import ExecuteProcess
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='hardware_interface',  # Replace with your package name
-            executable='hardware_interface',   # Replace with your executable name
-            name='hardware_interface',
+            package='controls',
+            executable='controls',
+            name='controls',
             output='screen',
+            parameters=[{"ROS_IP": "0.0.0.0"}, {"ROS_TCP_PORT": 10000}],
         ),
         ExecuteProcess(
-            cmd=[['ros2 launch phidgets_spatial spatial-launch.py']],
+            cmd=[['ros2 launch sim endpoint.py']],
             shell=True
         )
     ])
