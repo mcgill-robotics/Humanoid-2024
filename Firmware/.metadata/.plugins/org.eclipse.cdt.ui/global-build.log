@@ -1,0 +1,70 @@
+19:43:38 **** Incremental Build of configuration Debug for project devkit_servo_test_CM7 ****
+make -j8 all 
+docker pull microros/micro_ros_static_library_builder:humble && docker run --rm -v C:\Users\vince\Documents\GitHub\Humanoid\Firmware\devkit_servo_test\CM7:/project --env MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils/microros_static_library_ide microros/micro_ros_static_library_builder:humble
+humble: Pulling from microros/micro_ros_static_library_builder
+3dd181f9be59: Already exists
+670e86ad086b: Already exists
+8f66abb24680: Already exists
+d8d02bb8b8dd: Already exists
+7f96db8146a8: Already exists
+743804516e14: Pulling fs layer
+859364f8b3ef: Pulling fs layer
+ab0bf823a95a: Pulling fs layer
+df2d8c09cf0a: Pulling fs layer
+7eb613503d01: Pulling fs layer
+3d43614a420a: Pulling fs layer
+abb7355e9ed7: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+c01c4eb73738: Pulling fs layer
+8a0306de5d0c: Pulling fs layer
+37995363e6e6: Pulling fs layer
+7eb613503d01: Waiting
+3d43614a420a: Waiting
+abb7355e9ed7: Waiting
+4f4fb700ef54: Waiting
+37995363e6e6: Waiting
+c01c4eb73738: Waiting
+8a0306de5d0c: Waiting
+df2d8c09cf0a: Waiting
+859364f8b3ef: Download complete
+df2d8c09cf0a: Verifying Checksum
+df2d8c09cf0a: Download complete
+7eb613503d01: Verifying Checksum
+7eb613503d01: Download complete
+3d43614a420a: Verifying Checksum
+3d43614a420a: Download complete
+abb7355e9ed7: Verifying Checksum
+4f4fb700ef54: Verifying Checksum
+4f4fb700ef54: Download complete
+ab0bf823a95a: Verifying Checksum
+ab0bf823a95a: Download complete
+743804516e14: Verifying Checksum
+743804516e14: Download complete
+37995363e6e6: Verifying Checksum
+37995363e6e6: Download complete
+8a0306de5d0c: Verifying Checksum
+8a0306de5d0c: Download complete
+743804516e14: Pull complete
+859364f8b3ef: Pull complete
+c01c4eb73738: Verifying Checksum
+c01c4eb73738: Download complete
+ab0bf823a95a: Pull complete
+df2d8c09cf0a: Pull complete
+7eb613503d01: Pull complete
+3d43614a420a: Pull complete
+abb7355e9ed7: Pull complete
+4f4fb700ef54: Pull complete
+c01c4eb73738: Pull complete
+8a0306de5d0c: Pull complete
+37995363e6e6: Pull complete
+Digest: sha256:8df17bda10fac82ff893bc51d80cf7383ceacf4d9ba550ee8bdcd89a016413ef
+Status: Downloaded newer image for microros/micro_ros_static_library_builder:humble
+docker.io/microros/micro_ros_static_library_builder:humble
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview microros/micro_ros_static_library_builder:humble
+docker: Error response from daemon: The system cannot find the file specified.
+See 'docker run --help'.
+make[1]: *** [makefile:92: pre-build] Error 127
+make: *** [makefile:65: all] Error 2
+"make -j8 all" terminated with exit code 2. Build might be incomplete.

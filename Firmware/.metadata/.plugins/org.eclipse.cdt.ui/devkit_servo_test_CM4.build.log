@@ -1,0 +1,18 @@
+18:04:24 **** Incremental Build of configuration Debug for project devkit_servo_test_CM4 ****
+make -j8 all 
+docker pull microros/micro_ros_static_library_builder:iron && docker run --rm -v C:\Users\vince\Documents\GitHub\Humanoid\Firmware\devkit_servo_test\CM4:/project --env MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils/microros_static_library_ide microros/micro_ros_static_library_builder:iron
+iron: Pulling from microros/micro_ros_static_library_builder
+Digest: sha256:6f1ae285070116c0d351a30563f2ae3ad7b595cab4b72ee2e130f3c2cafe6098
+Status: Image is up to date for microros/micro_ros_static_library_builder:iron
+docker.io/microros/micro_ros_static_library_builder:iron
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview microros/micro_ros_static_library_builder:iron
+docker: Error response from daemon: The system cannot find the file specified.
+See 'docker run --help'.
+make[1]: *** [makefile:87: pre-build] Error 127
+make: *** [makefile:60: all] Error 2
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+
+18:04:25 Build Failed. 2 errors, 0 warnings. (took 1s.224ms)
+
