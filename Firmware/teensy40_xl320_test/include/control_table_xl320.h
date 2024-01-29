@@ -1,33 +1,14 @@
 //Size in bytes
 #ifndef control_table_xl320
 #define control_table_xl320
-
 #include "stdint.h"
-
-struct InstructionPacket {
-    uint8_t header1 = 0xFF;
-    uint8_t header2 = 0xFF;
-    uint8_t header3 = 0xFD;
-    uint8_t reserved = 0x00;
-    uint8_t packet_id;
-    uint8_t lengthL;
-    uint8_t lengthH;
-    uint8_t instruction;
-    uint8_t* parameters;
-    uint8_t crcL;
-    uint8_t crcH;
-};
 
 struct StatusPacket {
     int packet_id;
     int param_length;
     int error;
+    uint8_t* param_pnt;
     uint8_t* parameters;
-};
-
-union crc_combine {
-    uint16_t crc_16;
-    uint8_t crc_8[2];
 };
 
 //EEPROM Control Table
@@ -39,7 +20,7 @@ union crc_combine {
 #define ID_SIZE 1
 #define BAUD_RATE_ADR 4
 #define BAUD_RATE_SIZE 1
-#define RETURN_DELAY_TIME_ADR 565
+#define RETURN_DELAY_TIME_ADR 5
 #define RETURN_DELAY_TIME_SIZE 1
 #define CW_ANGLE_LIMIT_ADR 6
 #define CW_ANGLE_SIZE 2
