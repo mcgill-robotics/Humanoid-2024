@@ -65,37 +65,13 @@ void writeInstructionPacket(HardwareSerial* serial, uint16_t param_length, uint8
     writeArray[4] = (3 + param_length) & 0x00FF;
     writeArray[5] = ((3 + param_length) & 0xFF00) >> 8;
     writeArray[6] = instruction;
-    writeArray[7] = *parameters;
+    if(param_length > 0) memcpy(writeArray+7, parameters, param_length);
     crc_combine crc_value;
     crc_value.crc_16 = update_crc(0, writeArray, 8+param_length);
     writeArray[7+param_length] = crc_value.crc_8[0];
     writeArray[8+param_length] = crc_value.crc_8[1];
 
     (*serial).write(writeArray, 10+param_length);
-}
-
-int receiveStatus(HardwareSerial* serial, uint16_t param_length, StatusPacket* status, uint8_t* mem_pnt){
-    int total_length = param_length + 11;
-    if((*serial).available() >= total_length){
-        uint8_t buf[total_length];
-        (*serial).readBytes((char*)&buf, total_length);
-        crc_combine crc_value;
-        crc_value.crc_16 = update_crc(0, buf, total_length-2);
-        if(buf[total_length-2] != crc_value.crc_8[0] || buf[total_length-1] != crc_value.crc_8[1]){
-            return 1; //bad CRC
-        }else{
-            int rcv_len = (buf[6] << 8) + buf[5];
-            if (rcv_len != param_length + 3) return 3; //bad length
-            (*status).error = buf[8];
-            (*status).param_length = param_length;
-            (*status).packet_id = buf[4];
-            (*status).parameters = &buf[9];
-            (*status).param_pnt = mem_pnt;
-            return 0;//success
-        }
-    }else{
-        return 2; //message length expected not available
-    }
 }
 
 ServoXL320* getServoByID(ServoXL320** servo_list, int len, int id){
@@ -108,18 +84,43 @@ ServoXL320* getServoByID(ServoXL320** servo_list, int len, int id){
     return nullptr;
 }
 
-int updateServoObjects(StatusPacket* packet, ServoXL320** servo_list, int len){
-    ServoXL320* servo = getServoByID(servo_list, len, (*packet).packet_id);
-    if (servo == nullptr) return -1; //servo not found
-    if ((*packet).error != 0) return (*packet).error + 10; //internal servo error
-    (*(*packet).param_pnt) = 
-
+int readOneStatus(HardwareSerial* serial, uint8_t* out, int param_length){
+    int total_length = param_length + 11;
+    while ((*serial).available() < total_length);
+    uint8_t buf[total_length];
+    (*serial).readBytes((char*) buf, total_length);
+    crc_combine crc_value;
+    crc_value.crc_16 = update_crc(0, buf, total_length-2);
+    if(buf[total_length-2] != crc_value.crc_8[0] || buf[total_length-1] != crc_value.crc_8[1]) return 1; //bad CRC
+    if(buf[8] != 0) return buf[8] + 10; //internal servo error
+    if((buf[6] << 8) & buf[5] != param_length + 3) return 3; //bad length
+    out[0] = buf[4];
+    memcpy(out+1,buf+9,param_length);
+    return 0; //success
 }
 
-void pingServo(HardwareSerial* serial, ServoXL320* servo){
+int pingServo(HardwareSerial* serial, ServoXL320* servo){
     writeInstructionPacket(serial, 0, (*servo).getID(), 0x01, nullptr);
-    while ((*serial).available() < 14);
-    
+    uint8_t rcv_buf[4];
+    int error = readOneStatus(serial, rcv_buf, 3);
+    if (error != 0) return error;
+    (*servo).setModelNumber((rcv_buf[2] << 8) & rcv_buf[1]);
+    (*servo).setFirmwareVersion(rcv_buf[3]);
+    return 0; //success
+}
+
+int* pingAllServos(HardwareSerial* serial, ServoXL320** servo_list, int len){
+    writeInstructionPacket(serial, 0, 0xFE, 0x01, nullptr);
+    uint8_t rcv_buf[4];
+    int error[len];
+    ServoXL320* servo;
+    for(int i = 0; i < len; i++){
+        error[i] = readOneStatus(serial, rcv_buf, 3);
+        if (error[i] == 0){
+            servo = getServoByID(servo_list,len,rcv_buf[0]);
+        }
+    }
+    return error;
 }
 
 //getters
