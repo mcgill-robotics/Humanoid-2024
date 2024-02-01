@@ -8,9 +8,11 @@ IPAddress local_ip(192, 168, 1, 177);
 IPAddress agent_ip(192, 168, 1, 113);
 size_t agent_port = 8888;
 
-void setup() {
+void setup()
+{
   Serial1.begin(1000000, SERIAL_8N1_HALF_DUPLEX);
-  while (!Serial1) {
+  while (!Serial1)
+  {
   }
   set_microros_native_ethernet_transports(local_mac, local_ip, agent_ip,
                                           agent_port);

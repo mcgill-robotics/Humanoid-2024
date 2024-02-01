@@ -4,7 +4,8 @@
 // Support:
 // Ping, Read, Write, Reg Write, Action, Factory Reset, Reboot, Clear, Control Table Backup
 
-union crc_combine {
+union crc_combine
+{
     uint16_t crc_16;
     uint8_t crc_8[2];
 };
@@ -44,10 +45,9 @@ unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr,
         0x8243, 0x0246, 0x024C, 0x8249, 0x0258, 0x825D, 0x8257, 0x0252,
         0x0270, 0x8275, 0x827F, 0x027A, 0x826B, 0x026E, 0x0264, 0x8261,
         0x0220, 0x8225, 0x822F, 0x022A, 0x823B, 0x023E, 0x0234, 0x8231,
-        0x8213, 0x0216, 0x021C, 0x8219, 0x0208, 0x820D, 0x8207, 0x0202
-    };
+        0x8213, 0x0216, 0x021C, 0x8219, 0x0208, 0x820D, 0x8207, 0x0202};
 
-    for(j = 0; j < data_blk_size; j++)
+    for (j = 0; j < data_blk_size; j++)
     {
         i = ((unsigned short)(crc_accum >> 8) ^ data_blk_ptr[j]) & 0xFF;
         crc_accum = (crc_accum << 8) ^ crc_table[i];
@@ -56,8 +56,9 @@ unsigned short update_crc(unsigned short crc_accum, unsigned char *data_blk_ptr,
     return crc_accum;
 }
 
-void writeInstructionPacket(HardwareSerial* serial, uint16_t param_length, uint8_t packet_id, uint8_t instruction, uint8_t* parameters){
-    uint8_t writeArray[10+param_length];
+void writeInstructionPacket(HardwareSerial *serial, uint16_t param_length, uint8_t packet_id, uint8_t instruction, uint8_t *parameters)
+{
+    uint8_t writeArray[10 + param_length];
     writeArray[0] = 0xFF;
     writeArray[1] = 0xFF;
     writeArray[2] = 0xFD;
@@ -65,312 +66,388 @@ void writeInstructionPacket(HardwareSerial* serial, uint16_t param_length, uint8
     writeArray[4] = (3 + param_length) & 0x00FF;
     writeArray[5] = ((3 + param_length) & 0xFF00) >> 8;
     writeArray[6] = instruction;
-    if(param_length > 0) memcpy(writeArray+7, parameters, param_length);
+    if (param_length > 0)
+        memcpy(writeArray + 7, parameters, param_length);
     crc_combine crc_value;
-    crc_value.crc_16 = update_crc(0, writeArray, 8+param_length);
-    writeArray[7+param_length] = crc_value.crc_8[0];
-    writeArray[8+param_length] = crc_value.crc_8[1];
+    crc_value.crc_16 = update_crc(0, writeArray, 8 + param_length);
+    writeArray[7 + param_length] = crc_value.crc_8[0];
+    writeArray[8 + param_length] = crc_value.crc_8[1];
 
-    (*serial).write(writeArray, 10+param_length);
+    (*serial).write(writeArray, 10 + param_length);
 }
 
-ServoXL320* getServoByID(ServoXL320** servo_list, int len, int id){
-    for(int i = 0; i < len; i++){
-        ServoXL320* item = servo_list[i];
-        if ((*item).getID() == id){
+ServoXL320 *getServoByID(ServoXL320 **servo_list, int len, int id)
+{
+    for (int i = 0; i < len; i++)
+    {
+        ServoXL320 *item = servo_list[i];
+        if ((*item).getID() == id)
+        {
             return item;
         }
     }
     return nullptr;
 }
 
-int readOneStatus(HardwareSerial* serial, uint8_t* out, int param_length){
+int readOneStatus(HardwareSerial *serial, uint8_t *out, int param_length)
+{
     int total_length = param_length + 11;
-    while ((*serial).available() < total_length);
+    while ((*serial).available() < total_length)
+        ;
     uint8_t buf[total_length];
-    (*serial).readBytes((char*) buf, total_length);
+    (*serial).readBytes((char *)buf, total_length);
     crc_combine crc_value;
-    crc_value.crc_16 = update_crc(0, buf, total_length-2);
-    if(buf[total_length-2] != crc_value.crc_8[0] || buf[total_length-1] != crc_value.crc_8[1]) return 1; //bad CRC
-    if(buf[8] != 0) return buf[8] + 10; //internal servo error
-    if((buf[6] << 8) & buf[5] != param_length + 3) return 3; //bad length
+    crc_value.crc_16 = update_crc(0, buf, total_length - 2);
+    if (buf[total_length - 2] != crc_value.crc_8[0] || buf[total_length - 1] != crc_value.crc_8[1])
+        return 1; // bad CRC
+    if (buf[8] != 0)
+        return buf[8] + 10; // internal servo error
+    if ((buf[6] << 8) & buf[5] != param_length + 3)
+        return 3; // bad length
     out[0] = buf[4];
-    memcpy(out+1,buf+9,param_length);
-    return 0; //success
+    memcpy(out + 1, buf + 9, param_length);
+    return 0; // success
 }
 
-int pingServo(HardwareSerial* serial, ServoXL320* servo){
+int pingServo(HardwareSerial *serial, ServoXL320 *servo)
+{
     writeInstructionPacket(serial, 0, (*servo).getID(), 0x01, nullptr);
     uint8_t rcv_buf[4];
     int error = readOneStatus(serial, rcv_buf, 3);
-    if (error != 0) return error;
+    if (error != 0)
+        return error;
     (*servo).setModelNumber((rcv_buf[2] << 8) & rcv_buf[1]);
     (*servo).setFirmwareVersion(rcv_buf[3]);
-    return 0; //success
+    return 0; // success
 }
 
-int* pingAllServos(HardwareSerial* serial, ServoXL320** servo_list, int len){
+int *pingAllServos(HardwareSerial *serial, ServoXL320 **servo_list, int len)
+{
     writeInstructionPacket(serial, 0, 0xFE, 0x01, nullptr);
     uint8_t rcv_buf[4];
     int error[len];
-    ServoXL320* servo;
-    for(int i = 0; i < len; i++){
+    ServoXL320 *servo;
+    for (int i = 0; i < len; i++)
+    {
         error[i] = readOneStatus(serial, rcv_buf, 3);
-        if (error[i] == 0){
-            servo = getServoByID(servo_list,len,rcv_buf[0]);
+        if (error[i] == 0)
+        {
+            servo = getServoByID(servo_list, len, rcv_buf[0]);
         }
     }
     return error;
 }
 
-//getters
+// getters
 
-uint16_t ServoXL320::getModelNumber() {
+uint16_t ServoXL320::getModelNumber()
+{
     return model_number;
 }
 
-uint8_t ServoXL320::getFirmwareVersion() {
+uint8_t ServoXL320::getFirmwareVersion()
+{
     return firmware_version;
 }
 
-uint8_t ServoXL320::getID() {
+uint8_t ServoXL320::getID()
+{
     return id;
 }
 
-uint8_t ServoXL320::getBaudRate() {
+uint8_t ServoXL320::getBaudRate()
+{
     return baud_rate;
 }
 
-uint8_t ServoXL320::getReturnDelayTime() {
+uint8_t ServoXL320::getReturnDelayTime()
+{
     return return_delay_time;
 }
 
-uint16_t ServoXL320::getCWAngleLimit() {
+uint16_t ServoXL320::getCWAngleLimit()
+{
     return cw_angle_limit;
 }
 
-uint16_t ServoXL320::getCCWAngleLimit() {
+uint16_t ServoXL320::getCCWAngleLimit()
+{
     return ccw_angle_limit;
 }
 
-uint8_t ServoXL320::getControlMode() {
+uint8_t ServoXL320::getControlMode()
+{
     return control_mode;
 }
 
-uint8_t ServoXL320::getTemperatureLimit() {
+uint8_t ServoXL320::getTemperatureLimit()
+{
     return temperature_limit;
 }
 
-uint8_t ServoXL320::getMinVoltageLimit() {
+uint8_t ServoXL320::getMinVoltageLimit()
+{
     return min_voltage_limit;
 }
 
-uint8_t ServoXL320::getMaxVoltageLimit() {
+uint8_t ServoXL320::getMaxVoltageLimit()
+{
     return max_voltage_limit;
 }
 
-uint16_t ServoXL320::getMaxTorque() {
+uint16_t ServoXL320::getMaxTorque()
+{
     return max_torque;
 }
 
-uint8_t ServoXL320::getStatusReturnLevel() {
+uint8_t ServoXL320::getStatusReturnLevel()
+{
     return status_return_level;
 }
 
-uint8_t ServoXL320::getShutdown() {
+uint8_t ServoXL320::getShutdown()
+{
     return shutdown;
 }
 
-uint8_t ServoXL320::getTorqueEnable() {
+uint8_t ServoXL320::getTorqueEnable()
+{
     return torque_enable;
 }
 
-uint8_t ServoXL320::getLED() {
+uint8_t ServoXL320::getLED()
+{
     return led;
 }
 
-uint8_t ServoXL320::getDGain() {
+uint8_t ServoXL320::getDGain()
+{
     return d_gain;
 }
 
-uint8_t ServoXL320::getIGain() {
+uint8_t ServoXL320::getIGain()
+{
     return i_gain;
 }
 
-uint8_t ServoXL320::getPGain() {
+uint8_t ServoXL320::getPGain()
+{
     return p_gain;
 }
 
-uint16_t ServoXL320::getGoalPosition() {
+uint16_t ServoXL320::getGoalPosition()
+{
     return goal_position;
 }
 
-uint16_t ServoXL320::getMovingSpeed() {
+uint16_t ServoXL320::getMovingSpeed()
+{
     return moving_speed;
 }
 
-uint16_t ServoXL320::getTorqueLimit() {
+uint16_t ServoXL320::getTorqueLimit()
+{
     return torque_limit;
 }
 
-uint16_t ServoXL320::getPresentPosition() {
+uint16_t ServoXL320::getPresentPosition()
+{
     return present_position;
 }
 
-uint16_t ServoXL320::getPresentSpeed() {
+uint16_t ServoXL320::getPresentSpeed()
+{
     return present_speed;
 }
 
-uint16_t ServoXL320::getPresentLoad() {
+uint16_t ServoXL320::getPresentLoad()
+{
     return present_load;
 }
 
-uint8_t ServoXL320::getPresentVoltage() {
+uint8_t ServoXL320::getPresentVoltage()
+{
     return present_voltage;
 }
 
-uint8_t ServoXL320::getPresentTemperature() {
+uint8_t ServoXL320::getPresentTemperature()
+{
     return present_temperature;
 }
 
-uint8_t ServoXL320::getRegisteredInstruction() {
+uint8_t ServoXL320::getRegisteredInstruction()
+{
     return registered_instruction;
 }
 
-uint8_t ServoXL320::getMoving() {
+uint8_t ServoXL320::getMoving()
+{
     return moving;
 }
 
-uint8_t ServoXL320::getHardwareErrorStatus() {
+uint8_t ServoXL320::getHardwareErrorStatus()
+{
     return hardware_error_status;
 }
 
-uint16_t ServoXL320::getPunch() {
+uint16_t ServoXL320::getPunch()
+{
     return punch;
 }
 
-//setters
+// setters
 
-void ServoXL320::setModelNumber(uint16_t value) {
+void ServoXL320::setModelNumber(uint16_t value)
+{
     model_number = value;
 }
 
-void ServoXL320::setFirmwareVersion(uint8_t value) {
+void ServoXL320::setFirmwareVersion(uint8_t value)
+{
     firmware_version = value;
 }
 
-void ServoXL320::setID(uint8_t value) {
+void ServoXL320::setID(uint8_t value)
+{
     id = value;
 }
 
-void ServoXL320::setBaudRate(uint8_t value) {
+void ServoXL320::setBaudRate(uint8_t value)
+{
     baud_rate = value;
 }
 
-void ServoXL320::setReturnDelayTime(uint8_t value) {
+void ServoXL320::setReturnDelayTime(uint8_t value)
+{
     return_delay_time = value;
 }
 
-void ServoXL320::setCWAngleLimit(uint16_t value) {
+void ServoXL320::setCWAngleLimit(uint16_t value)
+{
     cw_angle_limit = value;
 }
 
-void ServoXL320::setCCWAngleLimit(uint16_t value) {
+void ServoXL320::setCCWAngleLimit(uint16_t value)
+{
     ccw_angle_limit = value;
 }
 
-void ServoXL320::setControlMode(uint8_t value) {
+void ServoXL320::setControlMode(uint8_t value)
+{
     control_mode = value;
 }
 
-void ServoXL320::setTemperatureLimit(uint8_t value) {
+void ServoXL320::setTemperatureLimit(uint8_t value)
+{
     temperature_limit = value;
 }
 
-void ServoXL320::setMinVoltageLimit(uint8_t value) {
+void ServoXL320::setMinVoltageLimit(uint8_t value)
+{
     min_voltage_limit = value;
 }
 
-void ServoXL320::setMaxVoltageLimit(uint8_t value) {
+void ServoXL320::setMaxVoltageLimit(uint8_t value)
+{
     max_voltage_limit = value;
 }
 
-void ServoXL320::setMaxTorque(uint16_t value) {
+void ServoXL320::setMaxTorque(uint16_t value)
+{
     max_torque = value;
 }
 
-void ServoXL320::setStatusReturnLevel(uint8_t value) {
+void ServoXL320::setStatusReturnLevel(uint8_t value)
+{
     status_return_level = value;
 }
 
-void ServoXL320::setShutdown(uint8_t value) {
+void ServoXL320::setShutdown(uint8_t value)
+{
     shutdown = value;
 }
 
-void ServoXL320::setTorqueEnable(uint8_t value) {
+void ServoXL320::setTorqueEnable(uint8_t value)
+{
     torque_enable = value;
 }
 
-void ServoXL320::setLED(uint8_t value) {
+void ServoXL320::setLED(uint8_t value)
+{
     led = value;
 }
 
-void ServoXL320::setDGain(uint8_t value) {
+void ServoXL320::setDGain(uint8_t value)
+{
     d_gain = value;
 }
 
-void ServoXL320::setIGain(uint8_t value) {
+void ServoXL320::setIGain(uint8_t value)
+{
     i_gain = value;
 }
 
-void ServoXL320::setPGain(uint8_t value) {
+void ServoXL320::setPGain(uint8_t value)
+{
     p_gain = value;
 }
 
-void ServoXL320::setGoalPosition(uint16_t value) {
+void ServoXL320::setGoalPosition(uint16_t value)
+{
     goal_position = value;
 }
 
-void ServoXL320::setMovingSpeed(uint16_t value) {
+void ServoXL320::setMovingSpeed(uint16_t value)
+{
     moving_speed = value;
 }
 
-void ServoXL320::setTorqueLimit(uint16_t value) {
+void ServoXL320::setTorqueLimit(uint16_t value)
+{
     torque_limit = value;
 }
 
-void ServoXL320::setPresentPosition(uint16_t value) {
+void ServoXL320::setPresentPosition(uint16_t value)
+{
     present_position = value;
 }
 
-void ServoXL320::setPresentSpeed(uint16_t value) {
+void ServoXL320::setPresentSpeed(uint16_t value)
+{
     present_speed = value;
 }
 
-void ServoXL320::setPresentLoad(uint16_t value) {
+void ServoXL320::setPresentLoad(uint16_t value)
+{
     present_load = value;
 }
 
-void ServoXL320::setPresentVoltage(uint8_t value) {
+void ServoXL320::setPresentVoltage(uint8_t value)
+{
     present_voltage = value;
 }
 
-void ServoXL320::setPresentTemperature(uint8_t value) {
+void ServoXL320::setPresentTemperature(uint8_t value)
+{
     present_temperature = value;
 }
 
-void ServoXL320::setRegisteredInstruction(uint8_t value) {
+void ServoXL320::setRegisteredInstruction(uint8_t value)
+{
     registered_instruction = value;
 }
 
-void ServoXL320::setMoving(uint8_t value) {
+void ServoXL320::setMoving(uint8_t value)
+{
     moving = value;
 }
 
-void ServoXL320::setHardwareErrorStatus(uint8_t value) {
+void ServoXL320::setHardwareErrorStatus(uint8_t value)
+{
     hardware_error_status = value;
 }
 
-void ServoXL320::setPunch(uint16_t value) {
+void ServoXL320::setPunch(uint16_t value)
+{
     punch = value;
 }
