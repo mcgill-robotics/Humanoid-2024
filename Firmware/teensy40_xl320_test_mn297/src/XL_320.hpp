@@ -53,9 +53,10 @@ private:
     int errorcode;
 
     // Serial communication
-    int serial_port;
-    struct termios tty;
-    int pEnable;
+    // int serial_port;
+    // struct termios tty;
+    int _pin_enable;
+    HardwareSerial *_serial;
 
     // ID
     unsigned char id;
@@ -163,8 +164,8 @@ public:
     int getPresentTemperature();
     int getRegisteredInstruction();
     int getHardwareErrorStatus();
+    void setSerialPort(HardwareSerial &serial);
 };
 
 vector<unsigned char> int2arg(int i, int n);
-
 #endif

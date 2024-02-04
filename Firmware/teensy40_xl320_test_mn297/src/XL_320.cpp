@@ -10,65 +10,40 @@
 
 using namespace std;
 
+#undef max
+#undef min
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+// extern "C"
+// {
+//     int _write(int fd, char *ptr, int len)
+//     {
+//         (void)fd;
+//         return Serial.write(ptr, len);
+//     }
+// }
+
 // --------------------------------------------------------------------------
 //
 //      Constructor & destructor
 //
 // --------------------------------------------------------------------------
 
-XL_320 ::XL_320() : errorcode(0), pEnable(11), id(0x01), model(0), version(0), verbose(false)
+XL_320 ::XL_320() : errorcode(0), _pin_enable(11), id(0x01), model(0), version(0), verbose(false)
 {
 
-    // Setup wiring Pi
-    wiringPiSetup();
-    pinMode(pEnable, OUTPUT);
+    pinMode(_pin_enable, OUTPUT);
 
-    // Open UART2 serial port
-    serial_port = open("/dev/ttyAMA1", O_RDWR);
-
-    // Read in existing settings, and handle any error
-    if (tcgetattr(this->serial_port, &tty) != 0)
-    {
-        errorcode = ERROR_SERIAL_GET;
-        error();
-        return;
-    }
-
-    tty.c_cflag &= ~PARENB;        // Clear parity bit, disabling parity (most common)
-    tty.c_cflag &= ~CSTOPB;        // Clear stop field, only one stop bit used in communication (most common)
-    tty.c_cflag &= ~CSIZE;         // Clear all bits that set the data size
-    tty.c_cflag |= CS8;            // 8 bits per byte (most common)
-    tty.c_cflag &= ~CRTSCTS;       // Disable RTS/CTS hardware flow control (most common)
-    tty.c_cflag |= CREAD | CLOCAL; // Turn on READ & ignore ctrl lines (CLOCAL = 1)
-    tty.c_lflag &= ~ICANON;
-    tty.c_lflag &= ~ECHO;                                                        // Disable echo
-    tty.c_lflag &= ~ECHOE;                                                       // Disable erasure
-    tty.c_lflag &= ~ECHONL;                                                      // Disable new-line echo
-    tty.c_lflag &= ~ISIG;                                                        // Disable interpretation of INTR, QUIT and SUSP
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY);                                      // Turn off s/w flow ctrl
-    tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL); // Disable any special handling of received bytes
-
-    tty.c_oflag &= ~OPOST; // Prevent special interpretation of output bytes (e.g. newline chars)
-    tty.c_oflag &= ~ONLCR; // Prevent conversion of newline to carriage return/line feed
-
-    tty.c_cc[VTIME] = 10; // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
-    tty.c_cc[VMIN] = 12;  // Wait for at least 12 bytes per response (minimal size of a status packet)
-
-    // Set baud rate
-    cfsetspeed(&tty, 1000000);
-
-    // Save tty settings, also checking for error
-    if (tcsetattr(serial_port, TCSANOW, &tty) != 0)
-    {
-        errorcode = ERROR_SERIAL_SET;
-        error();
-        return;
-    }
+    _serial = &Serial1;
+    _serial->begin(1000000);
 }
 
 XL_320 ::~XL_320()
 {
-    close(serial_port);
+    // close(serial_port);
 }
 
 string XL_320 ::error()
@@ -127,6 +102,11 @@ string XL_320 ::error()
     return es.str();
 }
 
+void XL_320 ::setSerialPort(HardwareSerial &serial)
+{
+    _serial = &serial;
+}
+
 // --------------------------------------------------------------------------
 //
 //      Send and receive
@@ -174,10 +154,10 @@ int XL_320 ::send(unsigned char Instruction, vector<int> param, bool receive)
 
     // === WRITE INSTRUCTION ================================================
 
-    digitalWrite(pEnable, HIGH);
-    write(serial_port, msg, sizeof(msg));
+    digitalWrite(_pin_enable, HIGH);
+    _serial->write(msg, sizeof(msg));
     delayMicroseconds(100);
-    digitalWrite(pEnable, LOW);
+    digitalWrite(_pin_enable, LOW);
 
     // === READ STATUS ======================================================
 
@@ -186,7 +166,7 @@ int XL_320 ::send(unsigned char Instruction, vector<int> param, bool receive)
 
         // Read serial buffer
         unsigned char buffer[32];
-        int nb = read(serial_port, &buffer, sizeof(buffer));
+        int nb = _serial->readBytes(buffer, sizeof(buffer));
 
         if (nb < 0)
         {
@@ -267,7 +247,8 @@ unsigned short XL_320 ::CRC(unsigned char *data_blk_ptr, unsigned short data_blk
         0x00A0, 0x80A5, 0x80AF, 0x00AA, 0x80BB, 0x00BE, 0x00B4, 0x80B1,
         0x8093, 0x0096, 0x009C, 0x8099, 0x0088, 0x808D, 0x8087, 0x0082,
         0x8183, 0x0186, 0x018C, 0x8189, 0x0198, 0x819D, 0x8197, 0x0192,
-        0x01B0, 0x81B5, 0x81BF, 0x01BA, 0x81AB, 0x01AE, 0x01A4, 0x81A1,`` 0x01E0, 0x81E5, 0x81EF, 0x01EA, 0x81FB, 0x01FE, 0x01F4, 0x81F1,
+        0x01B0, 0x81B5, 0x81BF, 0x01BA, 0x81AB, 0x01AE, 0x01A4, 0x81A1,
+        0x01E0, 0x81E5, 0x81EF, 0x01EA, 0x81FB, 0x01FE, 0x01F4, 0x81F1,
         0x81D3, 0x01D6, 0x01DC, 0x81D9, 0x01C8, 0x81CD, 0x81C7, 0x01C2,
         0x0140, 0x8145, 0x814F, 0x014A, 0x815B, 0x015E, 0x0154, 0x8151,
         0x8173, 0x0176, 0x017C, 0x8179, 0x0168, 0x816D, 0x8167, 0x0162,
