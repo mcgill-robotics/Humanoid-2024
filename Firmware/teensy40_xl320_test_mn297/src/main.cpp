@@ -24,6 +24,7 @@ extern "C"
 void setup()
 {
     Serial.begin(115200);
+
     while (!Serial)
         ;
     Serial.println("START");
@@ -34,7 +35,6 @@ void setup()
     Servo1.verbose = true;
 }
 
-// TODO crashing right now doesnt work
 void loop()
 {
     // cout << "Hello, world!" << endl;
@@ -43,7 +43,8 @@ void loop()
     // Test LED colors
     for (int i = 0; i < 8; i++)
     {
-        Servo1.setLED(i);
+        int status = Servo1.setLED(i);
+        cout << "LED status: " << status << endl;
         delayMicroseconds(1000000);
     }
 }

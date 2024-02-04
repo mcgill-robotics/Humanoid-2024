@@ -68,6 +68,8 @@ public:
     // Destructor
     ~XL_320();
 
+    void begin();
+
     // General info
     int model;
     int version;

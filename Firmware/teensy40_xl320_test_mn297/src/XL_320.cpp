@@ -10,13 +10,6 @@
 
 using namespace std;
 
-#undef max
-#undef min
-#include <stdio.h>
-#include <iostream>
-
-using namespace std;
-
 // extern "C"
 // {
 //     int _write(int fd, char *ptr, int len)
@@ -38,12 +31,17 @@ XL_320 ::XL_320() : errorcode(0), _pin_enable(11), id(0x01), model(0), version(0
     pinMode(_pin_enable, OUTPUT);
 
     _serial = &Serial1;
-    _serial->begin(1000000);
+    // _serial->begin(115200);
 }
 
 XL_320 ::~XL_320()
 {
     // close(serial_port);
+}
+
+void XL_320::begin()
+{
+    Serial1.begin(115200);
 }
 
 string XL_320 ::error()
