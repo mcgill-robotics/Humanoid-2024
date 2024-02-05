@@ -113,6 +113,7 @@ void XL_320 ::setSerialPort(HardwareSerial &serial)
 
 int XL_320 ::send(unsigned char Instruction, vector<int> param, bool receive)
 {
+    errorcode = 0;
 
     // Number of parameters
     int np = (int)param.size();
