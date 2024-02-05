@@ -4,6 +4,8 @@ services:
     volumes:
       - ./:/root/Humanoid
     command: bash -c "tail -f /dev/null"
+    ports:
+      - "8888:8888"
     # deploy:
     #   resources:
     #     reservations:
