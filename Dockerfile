@@ -1,5 +1,6 @@
-FROM ros:humble-ros-base
-
-RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
-    echo "source /root/Humanoid/ros2_ws/install/setup.bash && source /root/Humanoid/ros2_ws/install/local_setup.bash" >> ~/.bashrc && \
-    echo "export ROS_DOMAIN_ID=<123>" >> ~/.bashrc
+FROM ros:noetic
+COPY requirements.txt .
+RUN apt-get -y update && apt-get install -y python-is-python3 python3-pip && \
+    pip install -r requirements.txt && rm requirements.txt && \
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
+    echo "source /root/Humanoid/catkin_ws/install/setup.bash" >> ~/.bashrc
