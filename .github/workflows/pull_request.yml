@@ -2,7 +2,7 @@ name: Integration Test
 
 on:
   pull_request:
-    branches: [humble]
+    branches: [noetic]
 
 jobs:
   CI:
