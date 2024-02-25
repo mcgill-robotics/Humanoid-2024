@@ -1,0 +1,14 @@
+float32 left_ankle
+float32 left_knee
+float32 left_hip_roll
+float32 left_hip_pitch
+float32 right_ankle
+float32 right_knee
+float32 right_hip_roll
+float32 right_hip_pitch
+float32 torso_roll
+float32 torso_yaw
+float32 left_elbow
+float32 right_elbow
+float32 left_shoulder
+float32 right_shoulder

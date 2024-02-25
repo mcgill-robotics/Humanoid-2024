@@ -1,0 +1,8 @@
+float32 right_pressure_leftup
+float32 right_pressure_leftdown
+float32 right_pressure_rightup
+float32 right_pressure_rightdown
+float32 left_pressure_leftup 
+float32 left_pressure_leftdown
+float32 left_pressure_rightup
+float32 left_pressure_rightdown

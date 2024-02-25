@@ -1,8 +1,8 @@
 # generated catkin workspaces
 */build/
-*/log/
-*/install/
-
+*/logs/
+*/devel/
+*/.catkin_tools/
 # swap files
 **/*.swp
 
