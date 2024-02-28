@@ -15,7 +15,7 @@
     <build_depend>message_generation</build_depend>
     <exec_depend>message_runtime</exec_depend>
 
-    <depend>auv_msgs</depend>
+    <depend>humanoid_msgs</depend>
     <depend>geometry_msgs</depend>
     <depend>rospy</depend>
     <depend>python3-numpy</depend>
