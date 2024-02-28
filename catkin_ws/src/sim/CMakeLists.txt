@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
 	tf2
 	tf2_geometry_msgs
 	tf2_ros
-    sbg_driver
 	std_msgs
 )
 
@@ -21,6 +20,5 @@ catkin_package( CATKIN_DEPENDS
 	tf2
 	tf2_geometry_msgs
 	tf2_ros
-    sbg_driver
 	message_runtime
 )
