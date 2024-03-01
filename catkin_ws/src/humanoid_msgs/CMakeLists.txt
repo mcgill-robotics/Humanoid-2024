@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(FILES
 	ServoStates.msg
 	PressureSensors.msg
+	ServoSetpoints.msg
 )
 
 generate_messages(DEPENDENCIES
