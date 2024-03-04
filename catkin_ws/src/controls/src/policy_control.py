@@ -48,11 +48,11 @@ def scaleActionToJointLimits(action):
         scaled_action.append(scaled_cmd)
     return np.array(scaled_action)
     
-def generateControl():
+def generateControl(_):
     stateGenerator.generateStateObservation()
     state = np.concatenate(stateGenerator.stacked_state).reshape(1, -1)
     state = torch.FloatTensor(state).to(device)
-    action = ppo.act(state)
+    action = ppo.act(state)[0]
     stateGenerator.updateAction(action)
     
     scaled_action = scaleActionToJointLimits(action)
@@ -65,7 +65,7 @@ def generateControl():
     setpoints.left_leg_hip_pitch_setpoint = scaled_action[model_output_mapping.index("left_hip_pitch")]
     setpoints.left_leg_hip_yaw_setpoint = scaled_action[model_output_mapping.index("left_hip_yaw")]
     setpoints.right_leg_ankle_setpoint = scaled_action[model_output_mapping.index("right_ankle_pitch")]
-    setpoints.right_leg_knee_setpoint = scaled_action[model_output_mapping.index("right_knee_pitch")]
+    setpoints.right_leg_knee_setpoint = scaled_action[model_output_mapping.index("right_knee")]
     setpoints.right_leg_hip_roll_setpoint = scaled_action[model_output_mapping.index("right_hip_roll")]
     setpoints.right_leg_hip_pitch_setpoint = scaled_action[model_output_mapping.index("right_hip_pitch")]
     setpoints.right_leg_hip_yaw_setpoint = scaled_action[model_output_mapping.index("right_hip_yaw")]
@@ -84,12 +84,12 @@ device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('
 if not torch.cuda.is_available(): print("WARN: Running policy on CPU!")
 
 ppo = ActorCritic(255, 16)
-ppo.load(rospy.get_param("~model_checkpoint_path"))
 
 if __name__ == '__main__':
     rospy.init_node('policy_controller')
     setpoint_publisher = rospy.Publisher('/servosCommand', ServoCommand, queue_size=1)
     
+    ppo.load(rospy.get_param("~model_checkpoint_path"))
     timer = rospy.Timer(rospy.Duration(float(rospy.get_param("~control_interval"))), generateControl)
 
     rospy.spin()

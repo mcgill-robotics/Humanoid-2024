@@ -2,7 +2,7 @@ import rospy
 from humanoid_msgs.msg import ServoFeedback, PressureSensors
 from geometry_msgs.msg import Vector3, Quaternion
 import numpy as np
-from numpy import quaternion
+from scipy.spatial.transform import Rotation
 
 inverseRotateVectors = lambda q, v : Rotation.from_quat([q.x, q.y, q.z, q.w]).inv().apply(v)
 
@@ -89,6 +89,7 @@ class PPOStateGenerator:
                                         self.previous_action))
         
         if self.stacked_state is None:
+            self.stacked_state = []
             self.stacked_state.append(current_state)
             self.stacked_state.append(current_state)
             self.stacked_state.append(current_state)

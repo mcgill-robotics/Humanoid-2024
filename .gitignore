@@ -8,3 +8,4 @@
 
 # cached files
 **/__pycache__/
+*.pyc
