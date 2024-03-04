@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="controls" type="fine_tune.py" name="fine_tune_control" respawn="false" output="screen">
+        <param name="control_interval" value="0.005" />
+        <param name="checkpoint_path" value="$(find control)/model_weights/CHECKPOINT_PATH_TODO" />
+        <param name="tuned_weights_output_dir" value="$(find control)/model_weights/" />
+    </node>
+</launch>
