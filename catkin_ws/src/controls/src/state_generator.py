@@ -1,5 +1,5 @@
 import rospy
-from humanoid_msgs.msg import ServoStates, PressureSensors
+from humanoid_msgs.msg import ServoFeedback, PressureSensors
 from geometry_msgs.msg import Vector2, Vector3, Quaternion
 from jax.scipy.spatial.transform import Rotation
 import numpy as np
@@ -28,7 +28,7 @@ class PPOStateGenerator:
         self.previous_action = np.array([0]*16)
         self.stacked_state = None
         
-        self.joint_state_sub = rospy.Subscriber('/servosFeedback', ServoStates, self.updateJointStates)
+        self.joint_state_sub = rospy.Subscriber('/servosFeedback', ServoFeedback, self.updateJointStates)
         self.lin_accel_sub = rospy.Subscriber('/state/local_lin_accel', Vector3, self.updateLinAccel)
         self.ang_vel_sub = rospy.Subscriber('/state/ang_vel', Vector3, self.updateAngVel)
         self.pressures_sub = rospy.Subscriber('/sensor/pressure_sensors', PressureSensors, self.updatePressure)
@@ -37,22 +37,22 @@ class PPOStateGenerator:
         
         
     def updateJointStates(self, msg):
-        self.current_joint_positions[model_output_mapping.index("left_ankle_pitch")] = msg.left_ankle_pitch
-        self.current_joint_positions[model_output_mapping.index("left_knee")] = msg.left_knee_pitch
-        self.current_joint_positions[model_output_mapping.index("left_hip_roll")] = msg.left_hip_roll
-        self.current_joint_positions[model_output_mapping.index("left_hip_pitch")] = msg.left_hip_pitch
-        self.current_joint_positions[model_output_mapping.index("left_hip_yaw")] = msg.left_hip_yaw
-        self.current_joint_positions[model_output_mapping.index("right_ankle_pitch")] = msg.right_ankle_pitch
-        self.current_joint_positions[model_output_mapping.index("right_knee")] = msg.right_knee_pitch
-        self.current_joint_positions[model_output_mapping.index("right_hip_roll")] = msg.right_hip_roll
-        self.current_joint_positions[model_output_mapping.index("right_hip_pitch")] = msg.right_hip_pitch
-        self.current_joint_positions[model_output_mapping.index("right_hip_yaw")] = msg.right_hip_yaw
-        self.current_joint_positions[model_output_mapping.index("torso_roll")] = msg.torso_roll
-        self.current_joint_positions[model_output_mapping.index("torso_yaw")] = msg.torso_yaw
-        self.current_joint_positions[model_output_mapping.index("left_elbow")] = msg.left_elbow_pitch
-        self.current_joint_positions[model_output_mapping.index("right_elbow")] = msg.right_elbow_pitch
-        self.current_joint_positions[model_output_mapping.index("left_shoulder_pitch")] = msg.left_shoulder_pitch
-        self.current_joint_positions[model_output_mapping.index("right_shoulder_pitch")] = msg.right_shoulder_pitch
+        self.current_joint_positions[model_output_mapping.index("left_ankle_pitch")] = msg.left_leg_ankle_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_knee")] = msg.left_leg_knee_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_hip_roll")] = msg.left_leg_hip_roll_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_hip_pitch")] = msg.left_leg_hip_pitch_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_hip_yaw")] = msg.left_leg_hip_yaw_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_ankle_pitch")] = msg.right_leg_ankle_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_knee")] = msg.right_leg_knee_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_hip_roll")] = msg.right_leg_hip_roll_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_hip_pitch")] = msg.right_leg_hip_pitch_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_hip_yaw")] = msg.right_leg_hip_yaw_fb[0]
+        self.current_joint_positions[model_output_mapping.index("torso_roll")] = msg.torso_roll_fb[0]
+        self.current_joint_positions[model_output_mapping.index("torso_yaw")] = msg.torso_yaw_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_elbow")] = msg.left_arm_elbow_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_elbow")] = msg.right_arm_elbow_fb[0]
+        self.current_joint_positions[model_output_mapping.index("left_shoulder_pitch")] = msg.left_arm_shoulder_fb[0]
+        self.current_joint_positions[model_output_mapping.index("right_shoulder_pitch")] = msg.right_arm_shoulder_fb[0]
         
     def updateLinAccel(self, msg):
         self.current_lin_accel = np.array([msg.x, msg.y, msg.z])
