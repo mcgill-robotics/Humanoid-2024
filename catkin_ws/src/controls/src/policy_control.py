@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import rospy
 from humanoid_msgs.msg import ServoCommand
 import numpy as np

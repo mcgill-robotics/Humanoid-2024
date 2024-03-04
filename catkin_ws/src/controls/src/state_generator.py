@@ -1,8 +1,8 @@
 import rospy
 from humanoid_msgs.msg import ServoFeedback, PressureSensors
-from geometry_msgs.msg import Vector2, Vector3, Quaternion
-from jax.scipy.spatial.transform import Rotation
+from geometry_msgs.msg import Vector3, Quaternion
 import numpy as np
+from numpy import quaternion
 
 inverseRotateVectors = lambda q, v : Rotation.from_quat([q.x, q.y, q.z, q.w]).inv().apply(v)
 
@@ -33,7 +33,7 @@ class PPOStateGenerator:
         self.ang_vel_sub = rospy.Subscriber('/state/ang_vel', Vector3, self.updateAngVel)
         self.pressures_sub = rospy.Subscriber('/sensor/pressure_sensors', PressureSensors, self.updatePressure)
         self.quat_sub = rospy.Subscriber('/state/quat', Quaternion, self.updateQuat)
-        self.vel_sub = rospy.Subscriber('/state/global_vel', Vector2, self.updateVelocity)
+        self.vel_sub = rospy.Subscriber('/state/global_vel', Vector3, self.updateVelocity)
         
         
     def updateJointStates(self, msg):

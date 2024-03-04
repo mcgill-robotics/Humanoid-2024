@@ -1,6 +1,6 @@
 <launch>
     <node pkg="controls" type="policy_control.py" name="policy_controller" respawn="false" output="screen">
         <param name="control_interval" value="0.005" />
-        <param name="checkpoint_path" value="$(find control)/model_weights/CHECKPOINT_PATH_TODO" />
+        <param name="checkpoint_path" value="$(find controls)/model_weights/PPO_Standing_0_0_episode_21.pth" />
     </node>
 </launch>
