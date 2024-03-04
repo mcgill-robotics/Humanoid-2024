@@ -28,7 +28,7 @@ class PPOStateGenerator:
         self.previous_action = np.array([0]*16)
         self.stacked_state = None
         
-        self.joint_state_sub = rospy.Subscriber('/servo/states', ServoStates, self.updateJointStates)
+        self.joint_state_sub = rospy.Subscriber('/servosFeedback', ServoStates, self.updateJointStates)
         self.lin_accel_sub = rospy.Subscriber('/state/local_lin_accel', Vector3, self.updateLinAccel)
         self.ang_vel_sub = rospy.Subscriber('/state/ang_vel', Vector3, self.updateAngVel)
         self.pressures_sub = rospy.Subscriber('/sensor/pressure_sensors', PressureSensors, self.updatePressure)
@@ -102,3 +102,22 @@ class PPOStateGenerator:
 model_output_mapping = ["right_shoulder_pitch", "right_elbow", "left_shoulder_pitch", "left_elbow", "left_hip_yaw", "left_hip_roll", "left_hip_pitch", "left_knee", "left_ankle_pitch", "right_hip_yaw", "right_hip_roll", "right_hip_pitch", "right_knee", "right_ankle_pitch", "torso_yaw", "torso_roll"]
 
 model_pressure_sensor_mapping = ["pressure_geom_LLB", "pressure_geom_LRB", "pressure_geom_LRF", "pressure_geom_LLF", "pressure_geom_RLB", "pressure_geom_RRB", "pressure_geom_RRF", "pressure_geom_RLF"]
+
+joint_limits = {
+    "right_shoulder_pitch": [-90, 90],
+    "right_elbow": [-90, 90],
+    "left_shoulder_pitch": [-90, 90],
+    "left_elbow": [-90, 90],
+    "left_hip_yaw": [-90, 90],
+    "left_hip_roll": [-90, 90],
+    "left_hip_pitch": [-90, 90],
+    "left_knee": [-90, 90],
+    "left_ankle_pitch": [-90, 90],
+    "right_hip_yaw": [-90, 90],
+    "right_hip_roll": [-90, 90],
+    "right_hip_pitch": [-90, 90],
+    "right_knee": [-90, 90],
+    "right_ankle_pitch": [-90, 90],
+    "torso_yaw": [-90, 90],
+    "torso_roll": [-90, 90]
+}

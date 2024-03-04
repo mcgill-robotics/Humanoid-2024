@@ -1,0 +1,17 @@
+#Each joint motor has 1 float32 value to set its angle to (degrees)
+float32 left_leg_ankle_setpoint
+float32 left_leg_knee_setpoint
+float32 left_leg_hip_roll_setpoint
+float32 left_leg_hip_pitch_setpoint
+float32 left_leg_hip_yaw_setpoint
+float32 right_leg_ankle_setpoint
+float32 right_leg_knee_setpoint
+float32 right_leg_hip_roll_setpoint
+float32 right_leg_hip_pitch_setpoint
+float32 right_leg_hip_yaw_setpoint
+float32 torso_roll_setpoint
+float32 torso_yaw_setpoint
+float32 left_arm_elbow_setpoint
+float32 right_arm_elbow_setpoint
+float32 left_arm_shoulder_setpoint
+float32 right_arm_shoulder_setpoint
