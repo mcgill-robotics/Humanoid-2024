@@ -2,9 +2,12 @@ services:
   Athena:
     environment:
       - DISPLAY=novnc:0.0 
+      - UDEV=on
     image: mcgillrobotics/humanoid:latest
     volumes:
+      # - /dev:/dev  # uncomment when using real servos
       - ./:/root/Humanoid
+    # privilege: true  # uncomment when using real servos
     command: bash -c "chmod -R +x /root/Humanoid/catkin_ws/src && tail -f /dev/null"
     ports:
       - "10000:10000"
