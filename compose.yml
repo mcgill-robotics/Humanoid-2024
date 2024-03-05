@@ -5,7 +5,7 @@ services:
     image: mcgillrobotics/humanoid:latest
     volumes:
       - ./:/root/Humanoid
-    command: bash -c "tail -f /dev/null"
+    command: bash -c "chmod -R +x /root/Humanoid/catkin_ws/src && tail -f /dev/null"
     ports:
       - "10000:10000"
     # deploy:
