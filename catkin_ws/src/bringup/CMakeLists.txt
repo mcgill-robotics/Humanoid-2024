@@ -11,6 +11,22 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+	controls	
+	sim
+	rosserial_arduino
+	rosserial_client
+)
+
+catkin_package(	CATKIN_DEPENDS 
+	controls	
+	sim
+	rosserial_arduino
+	rosserial_client
+)
+
+rosserial_generate_ros_lib(
+	PACKAGE rosserial_arduino
+	SCRIPT make_libraries.py
 )
 
 ## System dependencies are found with CMake's conventions
