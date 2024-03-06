@@ -1,4 +1,5 @@
 <launch>
     <param name="/use_sim_time" value="true" />
     <include file="$(find unity)/launch/endpoint.launch"></include>
+    <node name="unity_bridge" pkg="unity" type="unity_bridge.py" output="screen"/>
 </launch>

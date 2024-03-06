@@ -10,3 +10,4 @@ RUN apt-get install -y dos2unix
 RUN echo "source /root/Humanoid/catkin_ws/devel/setup.bash" >> ~/.bashrc 
 RUN apt-get install -y ros-noetic-rosserial-arduino 
 RUN apt-get install -y ros-noetic-rosserial
+RUN pip3 install numpy-quaternion
