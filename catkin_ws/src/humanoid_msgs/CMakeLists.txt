@@ -16,6 +16,7 @@ add_message_files(FILES
 	ServoCommand.msg
 	ServoFeedback.msg
 	PressureSensors.msg
+	UnityState.msg
 )
 
 generate_messages(DEPENDENCIES
