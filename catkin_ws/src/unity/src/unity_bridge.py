@@ -16,14 +16,14 @@ def unityStateCb(msg):
     quat  = q_NWU_NED * np.quaternion(unityQuat.w, unityQuat.x, unityQuat.y, unityQuat.z) * q_NWU_NED.conj()
     ros_quat = Quaternion(x=quat.x, y=quat.y, z=quat.z, w=quat.w)
 
-    global_vel = Vector3(x=unityGlobalVel.z, y=-unityGlobalVel.x, z=unityGlobalVel.y)
+    global_vel = Vector3(x=unityGlobalVel.z, y=-unityGlobalVel.x, z=0)
     
     global_lin_accel = np.array([unityLinAccel.z, -unityLinAccel.x, unityLinAccel.y])
-    local_lin_accel = quat * global_lin_accel * quat.conj()
+    local_lin_accel = quaternion.rotate_vectors(quat.conj(), global_lin_accel)
     ros_local_lin = Vector3(x=local_lin_accel[0], y=local_lin_accel[1], z=local_lin_accel[2])
 
     global_ang_vel = np.array([unityAngVel.z, -unityAngVel.x, unityAngVel.y])
-    local_ang_vel = quat * global_ang_vel * quat.conj() 
+    local_ang_vel = quaternion.rotate_vectors(quat.conj(), global_ang_vel)
     ros_ang_vel = Vector3(x=local_ang_vel[0], y=local_ang_vel[1], z=local_ang_vel[2])
 
     pub_global_vel.publish(global_vel)
