@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>controls</name>
+  <name>hardware</name>
   <version>0.1.0</version>
   <description>Package to interface with hardware on humanoid robot, namely the cameras, IMU, motors, and serial sensors.</description>
   <maintainer email="mcgill.humanoid@gmail.com">McGill Humanoid</maintainer>
