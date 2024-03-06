@@ -1,0 +1,4 @@
+geometry_msgs/Vector3 local_lin_accel
+geometry_msgs/Quaternion quat
+geometry_msgs/Vector3 global_vel
+geometry_msgs/Vector3 ang_vel
