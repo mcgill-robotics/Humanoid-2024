@@ -1,3 +1,0 @@
-<launch>
-    <include file="$(find sim)/launch/endpoint.launch"></include>
-</launch>

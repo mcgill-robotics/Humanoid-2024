@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>vision</name>
+  <name>controls</name>
   <version>0.1.0</version>
-  <description>Package to enable a basic understanding of the robot's environment (using SLAM, object detection)</description>
+  <description>Package to interface with hardware on humanoid robot, namely the cameras, IMU, motors, and serial sensors.</description>
   <maintainer email="mcgill.humanoid@gmail.com">McGill Humanoid</maintainer>
   <license>GPLv3</license>
 

@@ -5,7 +5,6 @@
   <description>Custom messages for Humanoid Project</description>
   <maintainer email="mcgill.humanoid@gmail.com">McGill Humanoid</maintainer>
   <license>GPLv3</license>
-  <url type="repository">TODO</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
