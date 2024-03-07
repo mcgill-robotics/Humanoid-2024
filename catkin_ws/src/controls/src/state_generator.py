@@ -37,22 +37,25 @@ class PPOStateGenerator:
         
         
     def updateJointStates(self, msg):
-        self.current_joint_positions[model_output_mapping.index("left_ankle_pitch")] = msg.left_leg_ankle_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_knee")] = msg.left_leg_knee_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_hip_roll")] = msg.left_leg_hip_roll_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_hip_pitch")] = msg.left_leg_hip_pitch_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_hip_yaw")] = msg.left_leg_hip_yaw_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_ankle_pitch")] = msg.right_leg_ankle_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_knee")] = msg.right_leg_knee_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_hip_roll")] = msg.right_leg_hip_roll_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_hip_pitch")] = msg.right_leg_hip_pitch_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_hip_yaw")] = msg.right_leg_hip_yaw_fb[0]
-        self.current_joint_positions[model_output_mapping.index("torso_roll")] = msg.torso_roll_fb[0]
-        self.current_joint_positions[model_output_mapping.index("torso_yaw")] = msg.torso_yaw_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_elbow")] = msg.left_arm_elbow_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_elbow")] = msg.right_arm_elbow_fb[0]
-        self.current_joint_positions[model_output_mapping.index("left_shoulder_pitch")] = msg.left_arm_shoulder_fb[0]
-        self.current_joint_positions[model_output_mapping.index("right_shoulder_pitch")] = msg.right_arm_shoulder_fb[0]
+        try:
+            self.current_joint_positions[model_output_mapping.index("left_ankle_pitch")] = msg.left_leg_ankle_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_knee")] = msg.left_leg_knee_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_hip_roll")] = msg.left_leg_hip_roll_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_hip_pitch")] = msg.left_leg_hip_pitch_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_hip_yaw")] = msg.left_leg_hip_yaw_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_ankle_pitch")] = msg.right_leg_ankle_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_knee")] = msg.right_leg_knee_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_hip_roll")] = msg.right_leg_hip_roll_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_hip_pitch")] = msg.right_leg_hip_pitch_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_hip_yaw")] = msg.right_leg_hip_yaw_fb[0]
+            self.current_joint_positions[model_output_mapping.index("torso_roll")] = msg.torso_roll_fb[0]
+            self.current_joint_positions[model_output_mapping.index("torso_yaw")] = msg.torso_yaw_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_elbow")] = msg.left_arm_elbow_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_elbow")] = msg.right_arm_elbow_fb[0]
+            self.current_joint_positions[model_output_mapping.index("left_shoulder_pitch")] = msg.left_arm_shoulder_fb[0]
+            self.current_joint_positions[model_output_mapping.index("right_shoulder_pitch")] = msg.right_arm_shoulder_fb[0]
+        except IndexError:
+            print("WARN: Joint feedback values are incomplete (some servos not sending feedback)!")
         
     def updateLinAccel(self, msg):
         self.current_lin_accel = np.array([msg.x, msg.y, msg.z])
