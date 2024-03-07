@@ -1,9 +1,15 @@
 <launch>
     <arg name="tcp_ip" default="0.0.0.0"/>
-    <arg name="tcp_port" default="10000"/>
+    <arg name="tcp_port_sim" default="10000"/>
+    <arg name="tcp_port_vis" default="10001"/>
 
-    <node name="unity_endpoint" pkg="unity" type="default_server_endpoint.py" output="screen">
+    <node name="unity_endpoint_sim" pkg="unity" type="default_server_endpoint.py" output="screen">
         <param name="tcp_ip" type="string" value="$(arg tcp_ip)"/>
-        <param name="tcp_port" type="int" value="$(arg tcp_port)"/>
+        <param name="tcp_port" type="int" value="$(arg tcp_port_sim)"/>
+    </node>
+
+    <node name="unity_endpoint_vis" pkg="unity" type="default_server_endpoint.py" output="screen">
+        <param name="tcp_ip" type="string" value="$(arg tcp_ip)"/>
+        <param name="tcp_port" type="int" value="$(arg tcp_port_vis)"/>
     </node>
 </launch>

@@ -11,6 +11,7 @@ services:
     command: bash -c "chmod -R +x /root/Humanoid/catkin_ws/src && tail -f /dev/null"
     ports:
       - "10000:10000"
+      - "10001:10001"
     # deploy:
     #   resources:
     #     reservations:
