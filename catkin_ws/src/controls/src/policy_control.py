@@ -20,7 +20,7 @@ def scaleActionToJointLimits(action):
     
 def generateControl(_):
     obs = stateGenerator.getStateObservation()
-    action, _ = ppo_agent.predict(obs)
+    action, _ = ppo_agent.predict(obs, deterministic=True)
     stateGenerator.updateAction(action)
     scaled_action = scaleActionToJointLimits(action)
     
@@ -53,9 +53,6 @@ if __name__ == '__main__':
     stateGenerator = PPOStateGenerator()
 
     ppo_agent = PPO.load(path=rospy.get_param("~model_checkpoint_path"))
-    params = ppo_agent.get_parameters()
-    params["policy"]["log_std"] = torch.full((int(rospy.get_param("~num_control_outputs")),), -5)
-    ppo_agent.set_parameters(params)
     
     timer = rospy.Timer(rospy.Duration(float(rospy.get_param("~control_interval"))), generateControl)
 
