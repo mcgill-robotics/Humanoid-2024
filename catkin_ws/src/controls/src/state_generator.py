@@ -26,7 +26,6 @@ class PPOStateGenerator:
         self.current_gravity_dir = np.array([0,0,-9.81])
         self.current_agent_vel = np.array([0, 0])
         self.previous_action = np.array([0]*16)
-        self.stacked_state = None
         
         self.joint_state_sub = rospy.Subscriber('/servosFeedback', ServoFeedback, self.updateJointStates)
         self.lin_accel_sub = rospy.Subscriber('/state/local_lin_accel', Vector3, self.updateLinAccel)
@@ -34,7 +33,6 @@ class PPOStateGenerator:
         self.pressures_sub = rospy.Subscriber('/sensor/pressure_sensors', PressureSensors, self.updatePressure)
         self.quat_sub = rospy.Subscriber('/state/quat', Quaternion, self.updateQuat)
         self.vel_sub = rospy.Subscriber('/state/global_vel', Vector3, self.updateVelocity)
-        
         
     def updateJointStates(self, msg):
         try:
@@ -82,25 +80,14 @@ class PPOStateGenerator:
     def updateAction(self, action_taken):
         self.previous_action = action_taken
     
-    def generateStateObservation(self):
-        current_state = np.concatenate((self.current_joint_positions,
+    def getStateObservation(self):
+        return np.concatenate((self.current_joint_positions,
                                         self.current_ang_vel,
                                         self.current_agent_vel,
                                         self.current_lin_accel,
                                         self.current_gravity_dir,
                                         self.current_foot_pressures,
                                         self.previous_action))
-        
-        if self.stacked_state is None:
-            self.stacked_state = []
-            self.stacked_state.append(current_state)
-            self.stacked_state.append(current_state)
-            self.stacked_state.append(current_state)
-            self.stacked_state.append(current_state)
-            self.stacked_state.append(current_state)
-        else:
-            self.stacked_state.pop(0)
-            self.stacked_state.append(current_state)
             
 
 model_output_mapping = ["right_shoulder_pitch", "right_elbow", "left_shoulder_pitch", "left_elbow", "left_hip_yaw", "left_hip_roll", "left_hip_pitch", "left_knee", "left_ankle_pitch", "right_hip_yaw", "right_hip_roll", "right_hip_pitch", "right_knee", "right_ankle_pitch", "torso_yaw", "torso_roll"]
